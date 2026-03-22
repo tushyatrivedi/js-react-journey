@@ -17,7 +17,8 @@ export default function Board() {
   const [xIsNext, setXIsNext] = useState(true);
 
   function handleClick(i) {
-    if (squares[i]) {
+    //if the square already has a value or there is a winner return early
+    if (squares[i] || calculateWinner(squares)) {
       return;
     }
     let nextSquares = squares.slice();
@@ -30,8 +31,18 @@ export default function Board() {
     setXIsNext(!xIsNext);
   }
 
+  //display status of the game, check if there is any winner
+  let status;
+  let winner = calculateWinner(squares);
+  if (winner) {
+    status = `${winner} player won the game`;
+  } else {
+    status = `Next player: ${xIsNext ? "X" : "O"}`;
+  }
+
   return (
     <>
+      <div className="status">{status}</div>
       <div className="board-row">
         <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
         <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
@@ -49,4 +60,27 @@ export default function Board() {
       </div>
     </>
   );
+}
+
+//function takes as a input an array of 9 squares,
+//inside checks each line possible in the game with the corresponding square values
+//it checks each line and finds the winner X or O or none and returns it
+function calculateWinner(squares) {
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+  for (let i = 0; i < lines.length; i++) {
+    const [a, b, c] = lines[i];
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      return squares[a];
+    }
+  }
+  return null;
 }
