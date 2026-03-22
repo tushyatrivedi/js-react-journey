@@ -10,12 +10,21 @@ function Square({ value, onSquareClick }) {
 }
 
 export default function Board() {
+  //Board component needs to remember value in each sqaure, so let parent component
+  //contain the state
   const [squares, setSquares] = useState(Array(9).fill(null));
+  //track the next move, X or O
+  const [xIsNext, setXIsNext] = useState(true);
 
   function handleClick(i) {
     let nextSquares = squares.slice();
-    nextSquares[i] = "X";
+    if (xIsNext) {
+      nextSquares[i] = "X";
+    } else {
+      nextSquares[i] = "O";
+    }
     setSquares(nextSquares);
+    setXIsNext(!xIsNext);
   }
 
   return (
