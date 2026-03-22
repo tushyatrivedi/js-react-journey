@@ -9,13 +9,30 @@ function Square({ value, onSquareClick }) {
   );
 }
 
-export default function Board() {
-  //Board component needs to remember value in each sqaure, so let parent component
-  //contain the state
-  const [squares, setSquares] = useState(Array(9).fill(null));
-  //track the next move, X or O
+export default function Game() {
+  //The Game component controls the state now down to the Board and Square component
   const [xIsNext, setXIsNext] = useState(true);
+  const [history, setHistory] = useState([Array(9).fill(null)]);
+  const currentSquares = history[history.length - 1];
+  function handlePlay(nextSquares) {
+    setXIsNext(!xIsNext);
+    let newHistory = [...history, nextSquares];
+    setHistory(newHistory);
+  }
 
+  return (
+    <div className="game">
+      <div className="game-board">
+        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+      </div>
+      <div className="game-info">
+        <ol>{}</ol>
+      </div>
+    </div>
+  );
+}
+
+function Board({ xIsNext, squares, onPlay }) {
   function handleClick(i) {
     //if the square already has a value or there is a winner return early
     if (squares[i] || calculateWinner(squares)) {
@@ -27,8 +44,7 @@ export default function Board() {
     } else {
       nextSquares[i] = "O";
     }
-    setSquares(nextSquares);
-    setXIsNext(!xIsNext);
+    onPlay(nextSquares);
   }
 
   //display status of the game, check if there is any winner
