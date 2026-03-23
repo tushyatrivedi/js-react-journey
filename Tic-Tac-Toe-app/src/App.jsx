@@ -11,9 +11,10 @@ function Square({ value, onSquareClick }) {
 
 export default function Game() {
   //The Game component controls the state now down to the Board and Square component
-  const [xIsNext, setXIsNext] = useState(true);
+
   const [history, setHistory] = useState([Array(9).fill(null)]);
   const [currentMove, setCurrentmove] = useState(0);
+  const xIsNext = currentMove % 2 == 0;
 
   //only display moves till currentMove
   const currentSquares = history[currentMove];
@@ -23,14 +24,12 @@ export default function Game() {
     let newHistory = [...history.slice(0, currentMove + 1), nextSquares];
     setCurrentmove(newHistory.length - 1);
     setHistory(newHistory);
-    setXIsNext(!xIsNext);
   }
 
   //this function will take the move ie index of the history array
   //and only return arrays from history till that index
   function jumpTo(nextMove) {
     setCurrentmove(nextMove);
-    setXIsNext(xIsNext % 2 == 0);
   }
 
   let moves = history.map((squares, move) => {
