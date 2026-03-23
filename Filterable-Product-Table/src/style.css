@@ -1,6 +1,11 @@
 * {
-  border: 1px solid blue;
+  /* border: 1px solid blue; */
   box-sizing: border-box;
+  font-size: large;
+}
+
+body {
+  background-color: bisque;
 }
 
 .search {
@@ -9,7 +14,13 @@
 }
 
 table {
+  background-color: blanchedalmond;
+  border: 1px solid black;
   margin: 5px;
+  padding: 5px;
+}
+td {
+  padding: 2px;
 }
 
 .container {

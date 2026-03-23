@@ -1,9 +1,31 @@
-function SearchBar() {
+import { useState } from "react";
+const data = [
+  { category: "Fruits", price: "$1", stocked: true, name: "Apple" },
+  { category: "Fruits", price: "$1", stocked: true, name: "Dragonfruit" },
+  { category: "Fruits", price: "$2", stocked: false, name: "Passionfruit" },
+  { category: "Vegetables", price: "$2", stocked: true, name: "Spinach" },
+  { category: "Vegetables", price: "$4", stocked: false, name: "Pumpkin" },
+  { category: "Vegetables", price: "$1", stocked: true, name: "Peas" },
+];
+function SearchBar({ onFilter, onCheck }) {
   return (
     <div className="search">
-      <input type="text" name="filter-product" />
+      <input
+        type="text"
+        name="filter-product"
+        onChange={(e) => {
+          onFilter(e.target.value);
+        }}
+      />
       <div>
-        <input type="checkbox" name="isStocked" id="stocked" />
+        <input
+          type="checkbox"
+          name="isStocked"
+          id="stocked"
+          onChange={(e) => {
+            onCheck(e.target.checked);
+          }}
+        />
         <label htmlFor="stocked">Only show stocked products</label>
       </div>
     </div>
@@ -38,9 +60,14 @@ function ProductTable({ products }) {
   let rows = [];
   products.forEach((product) => {
     if (previousCategory !== product.category)
-      rows.push(<ProductCategoryRow category={product.category} />);
+      rows.push(
+        <ProductCategoryRow
+          category={product.category}
+          key={`${product.category}${product.name}`}
+        />,
+      );
 
-    rows.push(<ProductRow product={product} />);
+    rows.push(<ProductRow product={product} key={product.name} />);
 
     previousCategory = product.category;
   });
@@ -59,19 +86,20 @@ function ProductTable({ products }) {
 }
 
 export default function FilterableProductTable() {
-  const products = [
-    { category: "Fruits", price: "$1", stocked: true, name: "Apple" },
-    { category: "Fruits", price: "$1", stocked: true, name: "Dragonfruit" },
-    { category: "Fruits", price: "$2", stocked: false, name: "Passionfruit" },
-    { category: "Vegetables", price: "$2", stocked: true, name: "Spinach" },
-    { category: "Vegetables", price: "$4", stocked: false, name: "Pumpkin" },
-    { category: "Vegetables", price: "$1", stocked: true, name: "Peas" },
-  ];
+  const [filter, setFilter] = useState("");
+  const [isChecked, setIsChecked] = useState(false);
+  let items = data.filter((x) => x.name.toLowerCase().includes(filter));
+  if (isChecked) {
+    items = items.filter((x) => x.stocked);
+  }
+  function handleFilter(name) {
+    setFilter(name);
+  }
 
   return (
     <div className="container">
-      <SearchBar />
-      <ProductTable products={products} />
+      <SearchBar onCheck={setIsChecked} onFilter={handleFilter} />
+      <ProductTable products={items} />
     </div>
   );
 }
