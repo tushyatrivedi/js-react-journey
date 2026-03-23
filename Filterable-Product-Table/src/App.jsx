@@ -1,18 +1,20 @@
 function SearchBar() {
   return (
-    <div>
-      <input type="text" />
-      <label htmlFor="stocked">Only show stocked products</label>
-      <input type="checkbox" name="isStocked" id="stocked" />
+    <div className="search">
+      <input type="text" name="filter-product" />
+      <div>
+        <input type="checkbox" name="isStocked" id="stocked" />
+        <label htmlFor="stocked">Only show stocked products</label>
+      </div>
     </div>
   );
 }
 
 function ProductRow({ product }) {
-  const name = stocked ? (
+  const name = product.stocked ? (
     product.name
   ) : (
-    <span style={{ color: "red" }}> product.name</span>
+    <span style={{ color: "red" }}> {product.name}</span>
   );
 
   return (
@@ -32,17 +34,26 @@ function ProductCategoryRow({ category }) {
 }
 
 function ProductTable({ products }) {
+  let previousCategory = null;
+  let rows = [];
+  products.forEach((product) => {
+    if (previousCategory !== product.category)
+      rows.push(<ProductCategoryRow category={product.category} />);
+
+    rows.push(<ProductRow product={product} />);
+
+    previousCategory = product.category;
+  });
+
   return (
     <table>
       <thead>
-        <th>Product</th>
-        <th>Price</th>
+        <tr>
+          <th>Name</th>
+          <th>Price</th>
+        </tr>
       </thead>
-      <tbody>
-        {/* products.forEach((element) => {
-        
-      }); */}
-      </tbody>
+      <tbody>{rows}</tbody>
     </table>
   );
 }
@@ -58,9 +69,9 @@ export default function FilterableProductTable() {
   ];
 
   return (
-    <div>
+    <div className="container">
       <SearchBar />
-      <ProductTable />
+      <ProductTable products={products} />
     </div>
   );
 }
