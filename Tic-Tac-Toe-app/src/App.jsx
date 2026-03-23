@@ -20,13 +20,27 @@ export default function Game() {
     setHistory(newHistory);
   }
 
+  // function jumpTo(nextMove){
+
+  // }
+
+  let moves = history.map((squares, move) => {
+    let description;
+    if (move > 0) {
+      description = `Go to move: ${move}`;
+    } else {
+      description = `Go to the beginning`;
+    }
+    return <button type="button">{description}</button>;
+  });
+
   return (
     <div className="game">
       <div className="game-board">
         <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
       </div>
-      <div className="game-info">
-        <ol>{}</ol>
+      <div>
+        <ol className="game-info">{moves}</ol>
       </div>
     </div>
   );
