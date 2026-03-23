@@ -7,12 +7,13 @@ const data = [
   { category: "Vegetables", price: "$4", stocked: false, name: "Pumpkin" },
   { category: "Vegetables", price: "$1", stocked: true, name: "Peas" },
 ];
-function SearchBar({ onFilter, onCheck }) {
+function SearchBar({ filter, isChecked, onFilter, onCheck }) {
   return (
     <div className="search">
       <input
         type="text"
         name="filter-product"
+        value={filter}
         onChange={(e) => {
           onFilter(e.target.value);
         }}
@@ -22,6 +23,7 @@ function SearchBar({ onFilter, onCheck }) {
           type="checkbox"
           name="isStocked"
           id="stocked"
+          value={isChecked}
           onChange={(e) => {
             onCheck(e.target.checked);
           }}
@@ -85,10 +87,10 @@ function ProductTable({ products }) {
   );
 }
 
-export default function FilterableProductTable() {
+function FilterableProductTable({ products }) {
   const [filter, setFilter] = useState("");
   const [isChecked, setIsChecked] = useState(false);
-  let items = data.filter((x) => x.name.toLowerCase().includes(filter));
+  let items = products.filter((x) => x.name.toLowerCase().includes(filter));
   if (isChecked) {
     items = items.filter((x) => x.stocked);
   }
@@ -98,8 +100,17 @@ export default function FilterableProductTable() {
 
   return (
     <div className="container">
-      <SearchBar onCheck={setIsChecked} onFilter={handleFilter} />
+      <SearchBar
+        filter={filter}
+        isChecked={isChecked}
+        onCheck={setIsChecked}
+        onFilter={handleFilter}
+      />
       <ProductTable products={items} />
     </div>
   );
+}
+
+export default function App() {
+  return <FilterableProductTable products={data} />;
 }
